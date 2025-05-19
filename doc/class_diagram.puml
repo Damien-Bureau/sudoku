@@ -1,0 +1,40 @@
+@startuml class_diagram
+
+class GameManager
+{
+    - board: Frame[9][9]
+
+    + GameManager()
+    + setBoard(Frame predefined_board[9][9]) : void
+    + generateBoard() : void
+    + displayBoard() : std::string
+    + addForbiddenDigitToColumn(x: int, digit: int) : void
+    + addForbiddenDigitToRow(y: int, digit: int) : void
+    + getDigitsOfColumn(x: int): std::vector<int>
+    + getDigitsOfLine(y: int): std::vector<int>
+    + getDigitsOfSquare(squareX: int, squareY: int): std::vector<Frame *>
+}
+
+class Frame
+{
+    digit: int
+    forbidden_digits: std::vector<int>
+
+    Frame()
+    Frame(digit: int)
+    Frame(squareX: int, squareY: int, digit: int)
+
+    getDigit(): int
+    getDigitString() : std::string
+    getSquareX() : int
+    getSquareY() : int
+    getForbiddenDigits() : std::vector<int>
+
+    setDigit(digit: int): void
+    setSquareCoordinates(squareX: int, squareY: int): void
+    addForbiddenDigit(digit: int): void
+}
+
+GameManager "1" *-- "81" Frame
+
+@enduml
