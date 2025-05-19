@@ -1,7 +1,12 @@
 #include <iostream>
+#include "GameManager.h"
+#include "BoardHelper.h"
 
 int main(int argc, char const *argv[])
 {
-    std::cout << "Hello, World!" << std::endl;
+    GameManager gm;
+    gm.generateBoard();
+    std::cout << gm.displayBoard() << std::endl;
+
     return 0;
 }
