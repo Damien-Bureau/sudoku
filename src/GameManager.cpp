@@ -74,25 +74,28 @@ void GameManager::setBoard(Frame predefined_board[BOARD_SIZE][BOARD_SIZE])
 
 void GameManager::generateBoard()
 {
-    for (int squareY = 0; squareY < 3; squareY++)
+    // for (int squareY = 0; squareY < 3; squareY++)
+    for (int digit = 1; digit <= 9; digit++)
     {
-        for (int squareX = 0; squareX < 3; squareX++)
+        // for (int squareX = 0; squareX < 3; squareX++)
+        for (int squareY = 0; squareY < 3; squareY++)
         {
-            /* Get frames of current square */
-            std::vector<Frame *> frames = this->getFramesOfSquare(squareX, squareY);
-            std::vector<std::pair<int, int>> framesCoordinates = {{0, 0},
-                                                                  {0, 1},
-                                                                  {0, 2},
-                                                                  {1, 0},
-                                                                  {1, 1},
-                                                                  {1, 2},
-                                                                  {2, 0},
-                                                                  {2, 1},
-                                                                  {2, 2}};
-
             /* Place each digit */
-            for (int digit = 1; digit <= 9; digit++)
+            // for (int digit = 1; digit <= 9; digit++)
+            for (int squareX = 0; squareX < 3; squareX++)
             {
+                /* Get frames of current square */
+                std::vector<Frame *> frames = this->getFramesOfSquare(squareX, squareY);
+                std::vector<std::pair<int, int>> framesCoordinates = {{0, 0},
+                                                                      {0, 1},
+                                                                      {0, 2},
+                                                                      {1, 0},
+                                                                      {1, 1},
+                                                                      {1, 2},
+                                                                      {2, 0},
+                                                                      {2, 1},
+                                                                      {2, 2}};
+
                 /* Remove frames that already contain a digit */
                 int nbFrames = (int)frames.size();
                 for (int i = 0; i < nbFrames; i++)
