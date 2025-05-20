@@ -28,10 +28,13 @@ std::string GameManager::displayBoard()
     for (int y = 0; y < BOARD_SIZE; y++)
     {
         temp_row = "";
-        if (y == 0 || y == 3 || y == 6 || y == 9)
+        if (y == 0)
         {
-
-            temp_row += "───────────────────────────────\n";
+            temp_row += "┌─────────┬─────────┬─────────┐\n";
+        }
+        else if (y == 3 || y == 6 || y == 9)
+        {
+            temp_row += "├─────────┼─────────┼─────────┤\n";
         }
         for (int x = 0; x < BOARD_SIZE; x++)
         {
@@ -53,7 +56,7 @@ std::string GameManager::displayBoard()
         }
         output += temp_row + VERTICAL_SEPARATOR_SIMPLE "\n";
     }
-    output += "───────────────────────────────\n";
+    output += "└─────────┴─────────┴─────────┘\n";
 
     return output;
 }
@@ -176,7 +179,7 @@ void GameManager::generateBoard()
                 }
                 std::cout << std::endl;
                 // std::cin.ignore();
-                sleep(100);
+                // sleep(100);
                 if (tryAgain)
                 {
                     std::cout << ANSI_RED "Unable to place digit '" << digit << "'!" ANSI_RESET << std::endl;
@@ -188,7 +191,7 @@ void GameManager::generateBoard()
                 std::cout << this->displayBoard() << std::endl;
             }
             system("clear");
-            std::cout << ANSI_GREEN "\nSquare (" << squareY << "," << squareX << ") has been generated successfully" ANSI_RESET << std::endl;
+            // std::cout << ANSI_GREEN "\nSquare (" << squareY << "," << squareX << ") has been generated successfully" ANSI_RESET << std::endl;
             std::cout << this->displayBoard() << std::endl;
         }
     }
