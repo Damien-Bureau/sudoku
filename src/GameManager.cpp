@@ -1,11 +1,15 @@
 #include <algorithm>
+#include <iostream>
 
 #include "GameManager.h"
 #include "Frame.h"
 #include "Utils.h"
+#include "ANSI.h"
 
-#define HORIZONTAL_SEPARATOR "─"
-#define VERTICAL_SEPARATOR "│"
+#define HORIZONTAL_SEPARATOR_SIMPLE "─"
+#define HORIZONTAL_SEPARATOR_DOUBLE "═"
+#define VERTICAL_SEPARATOR_SIMPLE "│"
+#define VERTICAL_SEPARATOR_DOUBLE "║"
 
 GameManager::GameManager()
 {
@@ -19,19 +23,37 @@ GameManager::GameManager()
 std::string GameManager::displayBoard()
 {
     std::string output = "\n";
-    std::string temp_row;
+    std::string temp_row = "";
 
     for (int y = 0; y < BOARD_SIZE; y++)
     {
         temp_row = "";
+        if (y == 0 || y == 3 || y == 6 || y == 9)
+        {
+
+            temp_row += "───────────────────────────────\n";
+        }
         for (int x = 0; x < BOARD_SIZE; x++)
         {
-            temp_row += VERTICAL_SEPARATOR " ";
-            temp_row += this->board[y][x].getDigitString();
+            if (x == 0 || x == 3 || x == 6 || x == 9)
+            {
+                temp_row += VERTICAL_SEPARATOR_SIMPLE;
+            }
+            temp_row += " ";
+            std::string digitString = this->board[y][x].getDigitString();
+            if (digitString == "0")
+            {
+                temp_row += " ";
+            }
+            else
+            {
+                temp_row += digitString;
+            }
             temp_row += " ";
         }
-        output += temp_row + VERTICAL_SEPARATOR "\n";
+        output += temp_row + VERTICAL_SEPARATOR_SIMPLE "\n";
     }
+    output += "───────────────────────────────\n";
 
     return output;
 }
@@ -55,38 +77,119 @@ void GameManager::generateBoard()
         {
             /* Get frames of current square */
             std::vector<Frame *> frames = this->getFramesOfSquare(squareX, squareY);
+            std::vector<std::pair<int, int>> framesCoordinates = {{0, 0},
+                                                                  {0, 1},
+                                                                  {0, 2},
+                                                                  {1, 0},
+                                                                  {1, 1},
+                                                                  {1, 2},
+                                                                  {2, 0},
+                                                                  {2, 1},
+                                                                  {2, 2}};
 
             /* Place each digit */
             for (int digit = 1; digit <= 9; digit++)
             {
-                /* Check frames that already contain a digit */
-                for (Frame *frame : frames)
+                /* Remove frames that already contain a digit */
+                int nbFrames = (int)frames.size();
+                for (int i = 0; i < nbFrames; i++)
                 {
+                    Frame *frame = frames[i];
+                    std::pair<int, int> frameCoordinates = framesCoordinates[i];
                     if (frame->getDigit() != 0)
                     {
                         frames.erase(std::find(frames.begin(), frames.end(), frame));
+                        framesCoordinates.erase(std::find(framesCoordinates.begin(), framesCoordinates.end(), frameCoordinates));
+                        nbFrames--;
                     }
                 }
 
-                /* Check forbidden frames for current digit */
-                std::vector<Frame *> framesAvailable = frames;
-                for (Frame *frame : framesAvailable)
+                /* Add available frames for current digit */
+                std::vector<Frame *> availableFrames;
+                std::vector<std::pair<int, int>> availableFramesCoordinates;
+                for (int i = 0; i < nbFrames; i++)
                 {
-                    /* Ignore frame if the digit is forbidden on it */
+                    Frame *frame = frames[i];
+                    std::pair<int, int> frameCoordinates = framesCoordinates[i];
+
+                    /* Add frame if the digit is not forbidden on it */
                     std::vector<int> frameForbiddenDigits = frame->getForbiddenDigits();
-                    if (std::find(frameForbiddenDigits.begin(), frameForbiddenDigits.end(), digit) != frameForbiddenDigits.end())
+                    if (std::find(frameForbiddenDigits.begin(), frameForbiddenDigits.end(), digit) == frameForbiddenDigits.end())
                     {
-                        framesAvailable.erase(std::find(framesAvailable.begin(), framesAvailable.end(), frame));
+                        availableFrames.push_back(frame);
+                        availableFramesCoordinates.push_back(frameCoordinates);
                     }
                 }
-                int nbFramesAvailable = framesAvailable.size();
-                int randomDigitPlacement = getRandomNumber(nbFramesAvailable - 1);
-                framesAvailable[randomDigitPlacement]->setDigit(digit);
+                int nbAvailableFrames = availableFrames.size() - 1;
+                int randomDigitPlacement;
+                bool tryAgain = false;
+                if (nbAvailableFrames >= 0)
+                {
+                    randomDigitPlacement = getRandomNumber(nbAvailableFrames);
+                    availableFrames[randomDigitPlacement]->setDigit(digit);
+                }
+                else
+                {
+                    tryAgain = true;
+                }
+                if (!tryAgain)
+                {
+                    /* Forbid digit on row and column */
+                    int column = availableFramesCoordinates[randomDigitPlacement].second + squareX * SQUARE_SIZE;
+                    int row = availableFramesCoordinates[randomDigitPlacement].first + squareY * SQUARE_SIZE;
+                    this->addForbiddenDigitToColumn(column, digit);
+                    this->addForbiddenDigitToRow(row, digit);
+                    std::cout << "Square: (" << squareX << "," << squareY << ")" << std::endl;
+                    std::cout << "Column: " << column << std::endl;
+                    std::cout << "Row   : " << row << std::endl;
+                    std::cout << std::endl;
+                    // std::cin.ignore();
+                }
 
-                /* Forbid digit on row and column */
-                // this->addForbiddenDigitToColumn(column, digit);
-                // this->addForbiddenDigitToRow(row, digit);
+                // Display frames in current square as a 3x3 grid
+                std::cout << "Empty frames in current square:\n";
+                for (int row = 0; row < 3; ++row)
+                {
+                    for (int col = 0; col < 3; ++col)
+                    {
+                        auto it = std::find(framesCoordinates.begin(), framesCoordinates.end(), std::make_pair(row, col));
+                        if (it != framesCoordinates.end())
+                        {
+                            std::cout << "(" << row << "," << col << ")";
+                        }
+                        else
+                        {
+                            std::cout << " ─── ";
+                        }
+                        if (col != 2)
+                            std::cout << "  ";
+                    }
+                    std::cout << "\n";
+                }
+                std::cout << std::endl;
+
+                // Display available frames for digit inline
+                std::cout << "Available frames for digit '" << digit << "': " << std::endl;
+                for (const auto &coord : availableFramesCoordinates)
+                {
+                    std::cout << "(" << coord.first << "," << coord.second << ") ";
+                }
+                std::cout << std::endl;
+                // std::cin.ignore();
+                sleep(100);
+                if (tryAgain)
+                {
+                    std::cout << ANSI_RED "Unable to place digit '" << digit << "'!" ANSI_RESET << std::endl;
+                    std::cin.ignore();
+                }
+                system("clear");
+                std::cout << "Generating square (" << squareY << "," << squareX << ") ..." << std::endl;
+                std::cout << "Press ENTER to place next digit" << std::endl;
+                std::cout << this->displayBoard() << std::endl;
             }
+            system("clear");
+            std::cout << ANSI_GREEN "\nSquare (" << squareY << "," << squareX << ") has been generated successfully" ANSI_RESET << std::endl;
+            std::cout << this->displayBoard() << std::endl;
         }
     }
 }
@@ -139,7 +242,6 @@ std::vector<Frame *> GameManager::getFramesOfSquare(int squareX, int squareY)
     }
     return frames;
 }
-
 
 std::string GameManager::getDigitsOfColumn_string(int x)
 {

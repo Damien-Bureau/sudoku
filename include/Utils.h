@@ -5,4 +5,6 @@ void newRandomSeed();
 
 int getRandomNumber(int max);
 
+void sleep(int milliseconds);
+
 #endif /* UTILS_H */

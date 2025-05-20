@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Frame.h"
 
 /* Constructors */
@@ -16,7 +17,6 @@ Frame::Frame(int squareX, int squareY, int digit)
     : digit(digit), squareX(0), squareY(0), forbidden_digits(std::vector<int>())
 {
 }
-
 
 /* Getters */
 
@@ -62,5 +62,8 @@ void Frame::setSquareCoordinates(int x, int y)
 
 void Frame::addForbiddenDigit(int digit)
 {
-    this->forbidden_digits.push_back(digit);
+    if (std::find(this->forbidden_digits.begin(), this->forbidden_digits.end(), digit) == this->forbidden_digits.end())
+    {
+        this->forbidden_digits.push_back(digit);
+    }
 }
