@@ -4,17 +4,17 @@
 /* Constructors */
 
 Frame::Frame()
-    : digit(1), squareX(0), squareY(0), forbidden_digits(std::vector<int>())
+    : digit(1), squareX(0), squareY(0), testedDigits(std::vector<int>())
 {
 }
 
 Frame::Frame(int digit)
-    : digit(digit), squareX(0), squareY(0), forbidden_digits(std::vector<int>())
+    : digit(digit), squareX(0), squareY(0), testedDigits(std::vector<int>())
 {
 }
 
 Frame::Frame(int squareX, int squareY, int digit)
-    : digit(digit), squareX(0), squareY(0), forbidden_digits(std::vector<int>())
+    : digit(digit), squareX(0), squareY(0), testedDigits(std::vector<int>())
 {
 }
 
@@ -40,9 +40,9 @@ int Frame::getSquareY()
     return this->squareY;
 }
 
-std::vector<int> Frame::getForbiddenDigits()
+std::vector<int> Frame::getTestedDigits()
 {
-    return this->forbidden_digits;
+    return this->testedDigits;
 }
 
 /* Setters */
@@ -60,10 +60,15 @@ void Frame::setSquareCoordinates(int x, int y)
 
 /* Methods */
 
-void Frame::addForbiddenDigit(int digit)
+void Frame::addTestedDigit(int digit)
 {
-    if (std::find(this->forbidden_digits.begin(), this->forbidden_digits.end(), digit) == this->forbidden_digits.end())
+    if (std::find(this->testedDigits.begin(), this->testedDigits.end(), digit) == this->testedDigits.end())
     {
-        this->forbidden_digits.push_back(digit);
+        this->testedDigits.push_back(digit);
     }
+}
+
+void Frame::resetTestedDigits()
+{
+    this->testedDigits.clear();
 }

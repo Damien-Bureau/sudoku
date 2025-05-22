@@ -13,7 +13,7 @@ private:
     bool showDigit = false;
     int squareX;
     int squareY;
-    std::vector<int> forbidden_digits;
+    std::vector<int> testedDigits;
 
 public:
     /* Constructors */
@@ -26,14 +26,15 @@ public:
     std::string getDigitString();
     int getSquareX();
     int getSquareY();
-    std::vector<int> getForbiddenDigits();
+    std::vector<int> getTestedDigits();
 
     /* Setters */
     void setDigit(int digit);
     void setSquareCoordinates(int squareX, int squareY);
 
     /* Methods */
-    void addForbiddenDigit(int digit);
+    void addTestedDigit(int digit);
+    void resetTestedDigits();
 };
 
 // #endif /* FRAME_H */

@@ -18,13 +18,23 @@ public:
     void setBoard(Frame predefined_board[BOARD_SIZE][BOARD_SIZE]);
     void generateBoard();
     std::string displayBoard();
-
-    void addForbiddenDigitToColumn(int x, int digit);
-    void addForbiddenDigitToRow(int y, int digit);
+    bool isBoardValid();
+    
+    bool isPlacementPossible(int x, int y, int digit);
 
     std::vector<int> getDigitsOfColumn(int x);
     std::vector<int> getDigitsOfRow(int y);
+    std::vector<int> getDigitsOfSquare(int x, int y);
+    /**
+     * @param x The column index of the cell (0-based).
+     * @param y The row index of the cell (0-based).
+     * 
+     * @return A std::pair<int, int> {squareX, squareY}
+     */
+    std::pair<int, int> getSquareCoordinates(int x, int y);
     std::vector<Frame *> getFramesOfSquare(int squareX, int squareY);
+
+    std::pair<int, int> getPreviousFrameCoordinates(int x, int y);
 
     std::string getDigitsOfColumn_string(int x);
 };

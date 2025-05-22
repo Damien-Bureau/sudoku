@@ -3,15 +3,13 @@
 ## Game generation algorithm
 
 ```
-pour chaque square dans la board:
-    pour chaque chiffre de 1 à 9:
-        vérifier les emplacements interdits du chiffre
-            → emplacements interdits par les lignes et colonnes
-                → vérifier si frame.forbiddenDigits contient le chiffre actuel
-            → emplacements interdits car il y a déjà un autre chiffre
-                → vérifier si frame.digit n'est pas nul
-        récupérer la liste/quantité d'emplacements possibles
-        générer un nombre aléatoire entre 0 et cette quantité
-        placer le chiffre selon le nombre généré aléatoirement
-        appliquer une interdiction du chiffre sur la ligne et la colonne où le chiffre a été placé
+pour chaque case :
+    tant qu'il y a des chiffres dispos (impossibleDigits.size() < 9):
+        vérifier si on peut placer un chiffre (est-il dans impossibleDigits ?)
+            si oui : placer le chiffre
+            si non : ajouter à impossibleDigits
+    si chiffre non placé (impossibleDigits.size() == 9):
+        reset la case actuelle
+        reset la case précédente
+        se déplacer à la case précédente
 ```
