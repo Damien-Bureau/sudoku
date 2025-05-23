@@ -16,7 +16,7 @@ private:
 public:
     GameManager();
     void setBoard(Frame predefined_board[BOARD_SIZE][BOARD_SIZE]);
-    void generateBoard();
+    int generateBoard();
     std::string displayBoard();
     bool isBoardValid();
     

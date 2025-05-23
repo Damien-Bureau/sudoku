@@ -11,7 +11,8 @@
 #define VERTICAL_SEPARATOR_SIMPLE "│"
 #define VERTICAL_SEPARATOR_DOUBLE "║"
 
-// #define DEBUG
+#define DEBUG
+#define SHOW_BOARD_GENERATION
 
 GameManager::GameManager()
 {
@@ -75,26 +76,30 @@ void GameManager::setBoard(Frame predefined_board[BOARD_SIZE][BOARD_SIZE])
     }
 }
 
-void GameManager::generateBoard()
+int GameManager::generateBoard()
 {
+    int nbIterations = 0;
     for (int y = 0; y < BOARD_SIZE; y++)
     {
         for (int x = 0; x < BOARD_SIZE; x++)
         {
             std::vector<int> availableDigits = (std::vector<int>){1, 2, 3, 4, 5, 6, 7, 8, 9};
+
             /* Remove tested digits from available digits */
             std::vector<int> testedDigits = this->board[y][x].getTestedDigits();
             for (int &digit : testedDigits)
             {
                 availableDigits.erase(std::find(availableDigits.begin(), availableDigits.end(), digit));
             }
-            
+
             int digitToPlace;
             while ((int)availableDigits.size() > 0)
             {
                 int randomIndex = getRandomNumber((int)availableDigits.size() - 1);
                 digitToPlace = availableDigits[randomIndex];
+#ifdef SHOW_BOARD_GENERATION
                 system("clear");
+#endif
 #ifdef DEBUG
                 std::cout << "Trying to place digit '" << digitToPlace << "' in frame (" << x << "," << y << ")" << std::endl;
                 std::cout << "Available digits: ";
@@ -110,6 +115,13 @@ void GameManager::generateBoard()
                 }
                 std::cout << std::endl;
 #endif
+#ifdef SHOW_BOARD_GENERATION
+                std::cout << "Iterations: " << nbIterations << std::endl;
+                std::cout << this->displayBoard() << std::endl;
+                // std::cin.ignore();
+                sleep(100);
+#endif
+                nbIterations++;
                 if (isPlacementPossible(x, y, digitToPlace))
                 {
                     this->board[y][x].setDigit(digitToPlace);
@@ -119,9 +131,6 @@ void GameManager::generateBoard()
                 {
                     availableDigits.erase(std::find(availableDigits.begin(), availableDigits.end(), digitToPlace));
                 }
-                std::cout << this->displayBoard() << std::endl;
-                // std::cin.ignore();
-                // sleep(50);
             }
             if ((int)availableDigits.size() == 0)
             {
@@ -134,7 +143,7 @@ void GameManager::generateBoard()
                 int previousFrameX = previousFrameCoordinates.first;
                 int previousFrameY = previousFrameCoordinates.second;
                 this->board[previousFrameY][previousFrameX].addTestedDigit(this->board[previousFrameY][previousFrameX].getDigit());
-                
+
                 /* Reset previous frame */
 #ifdef DEBUG
                 std::cout << "Resetting previous frame (" << previousFrameX << "," << previousFrameY << ")" << std::endl;
@@ -143,9 +152,9 @@ void GameManager::generateBoard()
 
                 /* Move to previous frame */
                 x = this->getPreviousFrameCoordinates(previousFrameX, previousFrameY).first;
-                // y = this->getPreviousFrameCoordinates(previousFrameX, previousFrameY).second;
+                y = this->getPreviousFrameCoordinates(previousFrameX, previousFrameY).second;
                 // x = previousFrameX;
-                y = previousFrameY;
+                // y = previousFrameY;
 
 #ifdef DEBUG
                 std::cout << "Moving to frame (" << x << "," << y << ")" << std::endl;
@@ -154,6 +163,8 @@ void GameManager::generateBoard()
             }
         }
     }
+
+    return nbIterations;
 }
 
 bool GameManager::isBoardValid()
@@ -162,11 +173,11 @@ bool GameManager::isBoardValid()
     std::vector<int> expected = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     /*
-    * Method:
-    *   - get digits of column/row/square
-    *   - sort digits
-    *   - compare with expected 
-    */
+     * Method:
+     *   - get digits of column/row/square
+     *   - sort digits
+     *   - compare with expected
+     */
 
     /* Check columns */
     for (int x = 0; x < BOARD_SIZE; x++)

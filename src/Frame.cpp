@@ -4,7 +4,7 @@
 /* Constructors */
 
 Frame::Frame()
-    : digit(1), squareX(0), squareY(0), testedDigits(std::vector<int>())
+    : digit(0), squareX(0), squareY(0), testedDigits(std::vector<int>())
 {
 }
 
