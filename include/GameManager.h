@@ -19,6 +19,7 @@ public:
     int generateBoard();
     std::string displayBoard();
     bool isBoardValid();
+    void removeDigitsFromBoard(int n);
     
     bool isPlacementPossible(int x, int y, int digit);
 

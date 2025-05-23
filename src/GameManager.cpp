@@ -230,6 +230,24 @@ out:
     return valid;
 }
 
+void GameManager::removeDigitsFromBoard(int n)
+{
+    int randomX, randomY;
+    for (int i = 0; i <= n; i++)
+    {
+        randomX = getRandomNumber(BOARD_SIZE);
+        randomY = getRandomNumber(BOARD_SIZE);
+        if (this->board[randomY][randomX].getDigit() == 0)
+        {
+            i--;
+        }
+        else
+        {
+            this->board[randomY][randomX].setDigit(0);
+        }
+    }
+}
+
 bool GameManager::isPlacementPossible(int x, int y, int digit)
 {
     std::vector<int> columnDigits = this->getDigitsOfColumn(x);
