@@ -11,8 +11,8 @@
 #define VERTICAL_SEPARATOR_SIMPLE "│"
 #define VERTICAL_SEPARATOR_DOUBLE "║"
 
-#define DEBUG
-#define SHOW_BOARD_GENERATION
+// #define DEBUG
+// #define SHOW_BOARD_GENERATION
 
 GameManager::GameManager()
 {
@@ -115,21 +115,29 @@ int GameManager::generateBoard()
                 }
                 std::cout << std::endl;
 #endif
-#ifdef SHOW_BOARD_GENERATION
-                std::cout << "Iterations: " << nbIterations << std::endl;
-                std::cout << this->displayBoard() << std::endl;
-                // std::cin.ignore();
-                sleep(100);
-#endif
                 nbIterations++;
                 if (isPlacementPossible(x, y, digitToPlace))
                 {
                     this->board[y][x].setDigit(digitToPlace);
+
+#ifdef SHOW_BOARD_GENERATION
+                    std::cout << "Iterations: " << nbIterations << std::endl;
+                    std::cout << this->displayBoard() << std::endl;
+                    // std::cin.ignore();
+                    sleep(70);
+#endif
                     break;
                 }
                 else
                 {
                     availableDigits.erase(std::find(availableDigits.begin(), availableDigits.end(), digitToPlace));
+
+#ifdef SHOW_BOARD_GENERATION
+                    std::cout << "Iterations: " << nbIterations << std::endl;
+                    std::cout << this->displayBoard() << std::endl;
+                    // std::cin.ignore();
+                    sleep(100);
+#endif
                 }
             }
             if ((int)availableDigits.size() == 0)
@@ -346,28 +354,28 @@ std::pair<int, int> GameManager::getPreviousFrameCoordinates(int x, int y)
     int newY = y;
     if (x == 0)
     {
-        newX = BOARD_SIZE;
-        newY--;
+        if (y == 0)
+        {
+            newX = 0;
+            newY = 0;
+        }
+        else
+        {
+            newX = BOARD_SIZE - 1;
+            newY--;
+        }
     }
     else
     {
         newX--;
     }
-    if (x == 0 && y == 0)
-    {
-        newX = 0;
-        newY = 0;
-    }
 
-    std::pair<int, int> newCoord;
-    newCoord.first = newX;
-    newCoord.second = newY;
-    return newCoord;
+    return {newX, newY};
 }
 
 std::string GameManager::getDigitsOfColumn_string(int x)
 {
-    std::vector<int> temp = this->getDigitsOfColumn(0);
+    std::vector<int> temp = this->getDigitsOfColumn(x);
     std::string output = "";
     for (int i = 0; i < (int)temp.size(); i++)
     {

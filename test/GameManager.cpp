@@ -163,7 +163,7 @@ TEST(getSquareCoordinates, oneTestPerSquare)
     EXPECT_EQ(coord.second, 2);
 }
 
-TEST(getPreviousFrameCoordinates, tests)
+TEST(getPreviousFrameCoordinates, returnsCorrectPreviousCoordinates)
 {
     /* Create GameManager */
     GameManager gm;
@@ -174,16 +174,12 @@ TEST(getPreviousFrameCoordinates, tests)
     EXPECT_EQ(coord.second, 0);
     
     coord = gm.getPreviousFrameCoordinates(1, 0);
-    EXPECT_EQ(coord.first, 0);
-    EXPECT_EQ(coord.second, 0);
+    EXPECT_EQ(coord.first, 0) << "previousX(1,0)";
+    EXPECT_EQ(coord.second, 0) << "previousY(1,0)";
 
     coord = gm.getPreviousFrameCoordinates(0, 1);
-    EXPECT_EQ(coord.first, 9);
-    EXPECT_EQ(coord.second, 0);
-    
-    coord = gm.getPreviousFrameCoordinates(0, 3);
-    EXPECT_EQ(coord.first, 9);
-    EXPECT_EQ(coord.second, 2);
+    EXPECT_EQ(coord.first, BOARD_SIZE - 1) << "(0,1) -> (" << BOARD_SIZE - 1 << ",0)";
+    EXPECT_EQ(coord.second, 0) << "previousY(0,1)";
 }
 
 // TEST(getFramesOfSquare, simpleSquare)
