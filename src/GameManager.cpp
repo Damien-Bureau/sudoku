@@ -5,6 +5,7 @@
 #include "Frame.h"
 #include "Utils.h"
 #include "ANSI.h"
+#include "BoardHelper.h"
 
 #define HORIZONTAL_SEPARATOR_SIMPLE "─"
 #define HORIZONTAL_SEPARATOR_DOUBLE "═"
@@ -78,6 +79,7 @@ void GameManager::setBoard(Frame predefined_board[BOARD_SIZE][BOARD_SIZE])
 
 int GameManager::generateBoard()
 {
+    this->setBoard(emptyBoard);
     int nbIterations = 0;
     for (int y = 0; y < BOARD_SIZE; y++)
     {
@@ -161,8 +163,6 @@ int GameManager::generateBoard()
                 /* Move to previous frame */
                 x = this->getPreviousFrameCoordinates(previousFrameX, previousFrameY).first;
                 y = this->getPreviousFrameCoordinates(previousFrameX, previousFrameY).second;
-                // x = previousFrameX;
-                // y = previousFrameY;
 
 #ifdef DEBUG
                 std::cout << "Moving to frame (" << x << "," << y << ")" << std::endl;
@@ -235,8 +235,8 @@ void GameManager::removeDigitsFromBoard(int n)
     int randomX, randomY;
     for (int i = 0; i <= n; i++)
     {
-        randomX = getRandomNumber(BOARD_SIZE);
-        randomY = getRandomNumber(BOARD_SIZE);
+        randomX = getRandomNumber(BOARD_SIZE - 1);
+        randomY = getRandomNumber(BOARD_SIZE - 1);
         if (this->board[randomY][randomX].getDigit() == 0)
         {
             i--;
@@ -282,6 +282,11 @@ bool GameManager::isPlacementPossible(int x, int y, int digit)
     }
 
     return true;
+}
+
+Frame *GameManager::getFrame(int x, int y)
+{
+    return &(this->board[y][x]);
 }
 
 std::vector<int> GameManager::getDigitsOfColumn(int x)

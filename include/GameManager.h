@@ -20,8 +20,10 @@ public:
     std::string displayBoard();
     bool isBoardValid();
     void removeDigitsFromBoard(int n);
-    
+
     bool isPlacementPossible(int x, int y, int digit);
+
+    Frame *getFrame(int x, int y);
 
     std::vector<int> getDigitsOfColumn(int x);
     std::vector<int> getDigitsOfRow(int y);
