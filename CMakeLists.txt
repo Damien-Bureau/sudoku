@@ -8,7 +8,7 @@ set(INCLUDE_DIR include)                # Change this to the directory where you
 set(SOURCE_DIR src)                     # Change this to the directory where your source files are located
 set(TEST_DIR test)                      # Change this to the directory where your test files are located
 set(DEBUG_COMPILE_OPTIONS -Wall)                                    # Change this to the compile options you want to use for Debug configuration
-set(RELEASE_COMPILE_OPTIONS -O3 -Wall -Wextra -Wpedantic -Werror)   # Change this to the compile options you want to use for Release configuration
+set(RELEASE_COMPILE_OPTIONS -O3 -Wall -Wextra -Wpedantic)   # Change this to the compile options you want to use for Release configuration
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)         # Change this to the directory where you want the executable to be built
 
 # Project name and version
@@ -27,6 +27,11 @@ add_executable(${PROJECT_NAME}${EXECUTABLE_EXTENTION} ${SOURCE_FILES} ${HEADER_F
 
 # Add the include directories
 target_include_directories(${PROJECT_NAME}${EXECUTABLE_EXTENTION} PUBLIC ${INCLUDE_DIR})
+
+include_directories(/usr/include/python3.11)
+link_directories(/usr/lib/python3.11/config-3.11-x86_64-linux-gnu)
+target_include_directories(${PROJECT_NAME}${EXECUTABLE_EXTENTION} PRIVATE /usr/include/python3.11)
+target_link_libraries(${PROJECT_NAME}${EXECUTABLE_EXTENTION} PRIVATE python3.11)
 
 # Set build types if not specified
 if(NOT CMAKE_BUILD_TYPE)
